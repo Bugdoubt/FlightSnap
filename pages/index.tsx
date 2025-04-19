@@ -29,50 +29,62 @@ export default function Home() {
     }
   };
 
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleDateString(undefined, {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">FlightSnap: Last-Minute European Deals</h1>
-      <div className="grid grid-cols-2 gap-4 mb-4">
+    <div className="p-8 max-w-4xl mx-auto text-center font-sans">
+      <h1 className="text-4xl font-extrabold mb-6 text-gray-800">FlightSnap</h1>
+      <p className="mb-8 text-gray-600">Find last-minute flight deals across Europe</p>
+
+      <div className="flex flex-col md:flex-row gap-4 justify-center mb-6">
         <input
           type="text"
           placeholder="From (e.g. LON)"
           value={departure}
           onChange={e => setDeparture(e.target.value.toUpperCase())}
-          className="border p-2 rounded"
+          className="border border-gray-300 rounded px-4 py-2 w-full md:w-64"
         />
         <input
           type="text"
           placeholder="To (e.g. AMS)"
           value={destination}
           onChange={e => setDestination(e.target.value.toUpperCase())}
-          className="border p-2 rounded"
+          className="border border-gray-300 rounded px-4 py-2 w-full md:w-64"
         />
+        <button
+          onClick={searchFlights}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded transition duration-200"
+        >
+          {loading ? 'Searching...' : 'Search Flights'}
+        </button>
       </div>
-      <button onClick={searchFlights} className="bg-blue-500 text-white px-4 py-2 rounded">
-        {loading ? 'Searching...' : 'Search Flights'}
-      </button>
 
-      <div className="mt-6">
-        {error && <p className="text-red-600 mb-4">{error}</p>}
-        {flights.length === 0 && !error && !loading && <p>No results yet.</p>}
-        {flights.length > 0 && (
-          <ul className="space-y-4">
-            {flights.map((flight, idx) => (
-              <li key={idx} className="border rounded p-4">
-                <p><strong>{flight.cityFrom}</strong> → <strong>{flight.cityTo}</strong></p>
-                <p>Price: £{flight.price}</p>
-                <p>Departure: {new Date(flight.dTime * 1000).toLocaleString()}</p>
-                <a
-                  href={flight.deep_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline"
-                >View Deal</a>
-              </li>
-            ))}
-          </ul>
-        )}
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        {flights.map((flight, idx) => (
+          <div key={idx} className="border rounded-lg p-4 text-left shadow hover:shadow-md transition duration-300">
+            <div className="text-lg font-semibold mb-1">{flight.cityFrom} → {flight.cityTo}</div>
+            <div className="text-gray-700 mb-1">Departure: {formatDate(flight.dTime)}</div>
+            <div className="text-gray-900 font-bold text-lg mb-2">Price: £{flight.price}</div>
+            <p className="text-sm text-gray-500 italic">
+              Use the above details to search this flight on Aviasales or Google Flights.
+            </p>
+          </div>
+        ))}
       </div>
+
+      {flights.length === 0 && !loading && !error && (
+        <p className="text-gray-500 mt-6">No results yet. Try searching above.</p>
+      )}
     </div>
   );
 }
