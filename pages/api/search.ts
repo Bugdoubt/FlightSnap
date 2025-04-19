@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       cityTo: to,
       price: item.value,
       dTime: new Date(item.depart_date).getTime() / 1000,
-      deep_link: `https://www.aviasales.com/search/${from}${item.depart_date.replace(/-/g, '')}${to}1`,
+      deep_link: `https://www.aviasales.com/search/${from.toString().toUpperCase()}${item.depart_date.replace(/-/g, '')}${to.toString().toUpperCase()}1`,
     }));
 
     res.status(200).json({ results });
