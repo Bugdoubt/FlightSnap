@@ -18,13 +18,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: 'Invalid response from API' });
     }
 
-    const results = data.data.map((item: any) => ({
-      cityFrom: from,
-      cityTo: to,
-      price: item.value,
-      dTime: new Date(item.depart_date).getTime() / 1000,
-      deep_link: `https://www.aviasales.com/search/${from.toString().toUpperCase()}${item.depart_date.replace(/-/g, '')}${to.toString().toUpperCase()}1`,
-    }));
+    const results = data.data.map((item: any) => {
+      const fromCode = from.toString().toUpperCase();
+      const toCode = to.toString().toUpperCase();
+      const departDate = item.depart_date.replace(/-/g, '');
+      const deepLink = `https://tp.media/r?marker=622901&trs=264554&searchUrl=avia/search/${fromCode}${departDate}${toCode}1&locale=en&currency=gbp`;
+
+      return {
+        cityFrom: fromCode,
+        cityTo: toCode,
+        price: item.value,
+        dTime: new Date(item.depart_date).getTime() / 1000,
+        deep_link: deepLink,
+      };
+    });
 
     res.status(200).json({ results });
   } catch (err) {
