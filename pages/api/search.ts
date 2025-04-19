@@ -22,7 +22,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const fromCode = from.toString().toUpperCase();
       const toCode = to.toString().toUpperCase();
       const departDate = item.depart_date.replace(/-/g, '');
-      const deepLink = `https://tp.media/r?marker=622901&trs=264554&searchUrl=avia/search/${fromCode}${departDate}${toCode}1&locale=en&currency=gbp`;
+      const rawSearch = `avia/search/${fromCode}${departDate}${toCode}1`;
+      const encodedSearch = encodeURIComponent(rawSearch);
+
+      const deepLink = `https://tp.media/r?marker=622901&trs=264554&searchUrl=${encodedSearch}&locale=en&currency=gbp`;
 
       return {
         cityFrom: fromCode,
